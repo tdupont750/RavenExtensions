@@ -9,3 +9,7 @@
 /*.user
 /*.suo
 /*.suo
+/Raven.Extensions.AnalyzerViewer/bin
+/Raven.Extensions.AnalyzerViewer/obj
+/Raven.Extensions.Tests/obj
+/Raven.Extensions.Tests/bin

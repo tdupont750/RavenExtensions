@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Lucene.Net">
-      <HintPath>..\Raven.Extensions.AlphanumericAnalyzer.Tests\bin\Debug\Lucene.Net.dll</HintPath>
+      <HintPath>..\Raven.Extensions.AlphanumericAnalyzer\bin\Debug\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions">
       <HintPath>..\packages\RavenDB.Database.2.0.2360\lib\net40\Raven.Abstractions.dll</HintPath>
