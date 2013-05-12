@@ -1,0 +1,11 @@
+/Lucene.AnalyzerViewer/bin
+/Lucene.AnalyzerViewer/obj
+/Raven.Extensions.AlphanumericAnalyzer/bin
+/Raven.Extensions.AlphanumericAnalyzer/obj
+/Raven.Extensions.AlphanumericAnalyzer.Tests/obj
+/Raven.Extensions.AlphanumericAnalyzer.Tests/bin
+/Raven.Extensions.LastInWinsReplicationConflictResolver/bin
+/Raven.Extensions.LastInWinsReplicationConflictResolver/obj
+/*.user
+/*.suo
+/*.suo
