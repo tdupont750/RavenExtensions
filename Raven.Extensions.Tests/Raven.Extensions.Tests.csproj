@@ -64,11 +64,13 @@
   <ItemGroup>
     <Compile Include="AlphanumericAnalyzer\AlphanumericAnalyzerIndexTests.cs" />
     <Compile Include="AlphanumericAnalyzer\AlphanumericAnalyzerTests.cs" />
-    <Compile Include="DateRange\DateRangePerformanceTests.cs" />
+    <Compile Include="DateRange\DateRangePerformanceIndexTests.cs" />
     <Compile Include="DateRange\CustomJsonLuceneDateTimeConverter.cs" />
-    <Compile Include="DateRange\CustomJsonLuceneDateTimeConverterTests.cs" />
+    <Compile Include="DateRange\CustomJsonLuceneDateTimeConverterIndexTests.cs" />
+    <Compile Include="RavenIndex\IRavenIndexData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RavenIndexTest.cs" />
+    <Compile Include="RavenIndex\RavenIndexDataBase.cs" />
+    <Compile Include="RavenIndex\RavenIndexTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

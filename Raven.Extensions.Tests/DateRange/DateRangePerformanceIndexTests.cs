@@ -1,28 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Raven.Client;
 using Raven.Client.Embedded;
 using Raven.Client.Indexes;
+using Raven.Extensions.Tests.RavenIndex;
 using Raven.Imports.Newtonsoft.Json;
 using Xunit;
 
 namespace Raven.Extensions.Tests.DateRange
 {
-    public class DateRangePerformanceTests : RavenIndexTest
+    public class DateRangePerformanceIndexTests
+        : RavenIndexTestBase<DateRangePerformanceIndexTests.Data>
     {
         private static readonly Random Random = new Random();
-        
+
         [Fact]
         public void LongIsFasterThanString()
         {
-            using (var store = NewDocumentStore<Index>())
-            using (var session = store.OpenSession())
+            using (var session = DocumentStore.OpenSession())
                 for (var i = 0; i < 10; i++)
                 {
                     var random = Random.Next(-1000, 1000);
                     var dateTime = DateTime.Now.AddHours(random);
-                    
+
                     var stringResult = GetStringResult(session, dateTime);
                     var longResult = GetLongResult(session, dateTime);
 
@@ -88,23 +90,30 @@ namespace Raven.Extensions.Tests.DateRange
             public long ElapsedMilliseconds { get; set; }
         }
 
-        protected override void PostInit(EmbeddableDocumentStore documentStore)
+        public class Data : RavenIndexDataBase<Index, Doc>
         {
-            var count = 1;
+            protected override ICollection<Doc> Documents
+            {
+                get
+                {
+                    var documents = new List<Doc>();
+                    var random = new Random();
 
-            for (var j = 0; j < 10; j++)
-                using (var bulkInsert = documentStore.BulkInsert())
-                    for (var i = 0; i < 2000; i++)
+                    for (var i = 1; i <= 20000; i++)
                     {
-                        var r = Random.Next(-1000, 1000);
+                        var r = random.Next(-1000, 1000);
                         var dateTime = DateTime.Now.AddHours(r);
-                        bulkInsert.Store(new Doc
+                        documents.Add(new Doc
                         {
-                            InternalId = count++,
+                            InternalId = i,
                             Created = dateTime,
                             Modified = dateTime
                         });
                     }
+
+                    return documents;
+                }
+            }
         }
 
         public class Doc
@@ -113,7 +122,7 @@ namespace Raven.Extensions.Tests.DateRange
 
             public DateTime Created { get; set; }
 
-            [JsonConverter(typeof(CustomJsonLuceneDateTimeConverter))]
+            [JsonConverter(typeof (CustomJsonLuceneDateTimeConverter))]
             public DateTime Modified { get; set; }
         }
 

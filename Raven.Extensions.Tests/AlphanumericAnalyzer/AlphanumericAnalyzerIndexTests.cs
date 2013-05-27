@@ -1,26 +1,28 @@
-﻿using System.Linq;
-using Raven.Client.Embedded;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Raven.Client;
 using Raven.Client.Indexes;
+using Raven.Extensions.Tests.RavenIndex;
 using Xunit;
 using Xunit.Extensions;
 
 namespace Raven.Extensions.Tests.AlphanumericAnalyzer
 {
-    public class AlphanumericAnalyzerIndexTests : RavenIndexTest
+    public class AlphanumericAnalyzerIndexTests
+        : RavenIndexTestBase<AlphanumericAnalyzerIndexTests.Data>
     {
         [Theory]
-        [InlineData(@"Text:Hello",              new[] { 0 })]
-        [InlineData(@"Text:file_name",          new[] { 2 })]
-        [InlineData(@"Text:name*",              new[] { 2, 3 })]
-        [InlineData(@"Text:my AND Text:txt",    new[] { 2, 3 })]
-        public void Query(string query, int[] expected)
+        [InlineData(@"Text:Hello",              new[] {0})]
+        [InlineData(@"Text:file_name",          new[] {2})]
+        [InlineData(@"Text:name*",              new[] {2, 3})]
+        [InlineData(@"Text:my AND Text:txt",    new[] {2, 3})]
+        public void Query(string query, int[] expectedIds)
         {
-            int[] actual;
+            int[] actualIds;
 
-            using (var documentStore = NewDocumentStore<Index>())
-            using (var session = documentStore.OpenSession())
+            using (var session = DocumentStore.OpenSession())
             {
-                actual = session.Advanced
+                actualIds = session.Advanced
                     .LuceneQuery<Doc>("Index")
                     .Where(query)
                     .SelectFields<int>("InternalId")
@@ -28,29 +30,29 @@ namespace Raven.Extensions.Tests.AlphanumericAnalyzer
                     .ToArray();
             }
 
-            Assert.Equal(expected, actual);
+            Assert.Equal(expectedIds, actualIds);
         }
 
-        public static readonly string[] DocText = new[]
+        public class Data : RavenIndexDataBase<Index, Doc>
         {
-            "Hello, world!",
-            "Goodnight...moon?",
-            "my_file_name_01.txt",
-            "my_file_name01.txt"
-        };
-
-        protected override void PostInit(EmbeddableDocumentStore documentStore)
-        {
-            using (var session = documentStore.OpenSession())
+            protected override ICollection<Doc> Documents
             {
-                for (int i = 0; i < DocText.Length; i++)
-                    session.Store(new Doc
+                get
+                {
+                    return new[]
                     {
-                        InternalId = i,
-                        Text = DocText[i]
-                    });
-
-                session.SaveChanges();
+                        "Hello, world!",
+                        "Goodnight...moon?",
+                        "my_file_name_01.txt",
+                        "my_file_name01.txt"
+                    }
+                        .Select((t, i) => new Doc
+                        {
+                            InternalId = i,
+                            Text = t
+                        })
+                        .ToArray();
+                }
             }
         }
 
